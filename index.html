@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>pasword maker</title></head><body>
+<main id=main></main>
+
+<script type="module">
+import { CSV } from "https://js.sabae.cc/CSV.js";
+import { rnd } from "https://js.sabae.cc/rnd.js";
+
+const num = await CSV.fetchJSON("num_d-yomi.csv");
+const symbol = await CSV.fetchJSON("symbol-yomi.csv");
+const alphabet = await CSV.fetchJSON("alphabet_d-yomi.csv");
+const alphabet2 = await CSV.fetchJSON("alphabet2_d-yomi.csv");
+
+const set = [
+  { type: num, length: 5, },
+  { type: alphabet, length: 1, },
+  { type: alphabet2, length: 1, },
+  { type: symbol, length: 1, },
+];
+
+const makePassword = () => {
+  const div = document.createElement("div");
+  for (const item of set) {
+    for (let i = 0; i < item.length; i++) {
+      const ruby = document.createElement("ruby");
+      const c = item.type[rnd(item.type.length)];
+      ruby.appendChild(document.createTextNode(c.char));
+      const yomi = document.createElement("rt");
+      yomi.textContent = c.yomi;
+      ruby.appendChild(yomi);
+      div.appendChild(ruby);
+    }
+  }
+  return div;
+};
+for (let i = 0; i < 200; i++) {
+  main.appendChild(makePassword());
+}
+
+</script>
+
+<style>
+div {
+  border-bottom: 1px solid black;
+  padding: .5em;
+}
+ruby {
+  font-size: 1.6em;
+  padding: .5em;
+}
+ruby rt {
+  font-size: .8em;
+  margin: .7em .3em;
+}
+</style>
+
