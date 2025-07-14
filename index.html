@@ -1,6 +1,23 @@
 <!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
 <title>pasword maker</title></head><body>
-<main id=main></main>
+<div id=main>
+<h1>password maker</h1>
+
+<table id=sels>
+  <tr><th>数字</th><td><input id=in1 value=5 type=number>桁</td></tr>
+  <tr><th>アルファベット大文字</th><td><input id=in2 value=1 type=number>桁</td></tr>
+  <tr><th>アルファベット小文字</th><td><input id=in3 value=1 type=number>桁</td></tr>
+  <tr><th>記号</th><td><input id=in4 value=1 type=number>桁</td></tr>
+  <tr><th>合計</th><td><input id=in5 disabled value=8 type=number>桁</td></tr>
+</table>
+<br>
+パスワード生成数<input id=in6 value=200 type=number>コ<br>
+<button id=btnmake>パスワードを生成する</button>
+
+<hr>
+<div><a href=https://github.com/code4fukui/password-maker/>src on GitHub</a></div>
+
+</div>
 
 <script type="module">
 import { CSV } from "https://js.sabae.cc/CSV.js";
@@ -18,8 +35,9 @@ const set = [
   { type: symbol, length: 1, },
 ];
 
-const makePassword = () => {
+const makePassword = (set) => {
   const div = document.createElement("div");
+  div.className = "password";
   for (const item of set) {
     for (let i = 0; i < item.length; i++) {
       const ruby = document.createElement("ruby");
@@ -33,24 +51,61 @@ const makePassword = () => {
   }
   return div;
 };
-for (let i = 0; i < 200; i++) {
-  main.appendChild(makePassword());
+
+const ins = [in1, in2, in3, in4];
+for (const i of ins) {
+  i.onchange = () => {
+    in5.value = ins.reduce((pre, i) => pre + parseInt(i.value), 0);
+  };
 }
 
+btnmake.onclick = () => {
+  for (let i = 0; i < ins.length; i++) {
+    set[i].length = parseInt(ins[i].value);
+  }
+
+  const num = parseInt(in6.value);
+  main.innerHTML = "";
+  for (let i = 0; i < num; i++) {
+    main.appendChild(makePassword(set));
+  }  
+};
 </script>
 
 <style>
-div {
+body {
+  font-family: sans-serif;
+  text-align: center;
+}
+table {
+  display: inline-block;
+}
+.password {
   border-bottom: 1px solid black;
   padding: .5em;
 }
 ruby {
-  font-size: 1.6em;
+  font-size: 1.5em;
   padding: .5em;
 }
 ruby rt {
-  font-size: .8em;
+  font-size: .6em;
   margin: .7em .3em;
+}
+input[type=number] {
+  width: 4em;
+  text-align: right;
+  margin: 0.2em 0.4em;
+  font-size: 20px;
+}
+button {
+  font-size: 20px;
+  padding: .5em;
+  margin: 1em;
+}
+th {
+  text-align: left;
 }
 </style>
 
+</body></html>
